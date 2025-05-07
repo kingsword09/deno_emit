@@ -1,7 +1,7 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
 
 use std::collections::HashMap;
-use std::string::FromUtf8Error;
+use std::sync::Arc;
 
 use deno_ast::ModuleKind;
 use deno_ast::TranspileModuleOptions;
@@ -17,6 +17,7 @@ use deno_emit::ModuleSpecifier;
 use deno_emit::SourceMapOption;
 use deno_emit::TranspileOptions;
 use deno_error::JsErrorBox;
+use deno_graph::source::LoadError;
 use serde::Serialize;
 use url::Url;
 use wasm_bindgen::prelude::*;
@@ -187,12 +188,10 @@ impl Loader for JsLoader {
       response
         .map(|value| serde_wasm_bindgen::from_value(value).unwrap())
         .map_err(|err| {
-          deno_graph::source::LoadError::Other(std::sync::Arc::new(
-            JsErrorBox::generic(format!(
-              "load rejected or errored: {:#?}",
-              err
-            )),
-          ))
+          LoadError::Other(Arc::new(JsErrorBox::generic(format!(
+            "load rejected or errored: {:#?}",
+            err
+          ))))
         })
     };
     Box::pin(f)
