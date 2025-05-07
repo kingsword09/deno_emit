@@ -1,6 +1,6 @@
 {
-  "name": "@deno/emit",
-  "version": "0.0.0",
+  "name": "@kingsword/deno-emit",
+  "version": "0.0.1",
   "exports": "./mod.ts",
   "publish": {
     "exclude": [

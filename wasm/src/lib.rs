@@ -306,9 +306,8 @@ pub async fn transpile(
   .map_err(|err| JsValue::from(js_sys::Error::new(&format!("{:#}", err))))?;
   let map = map
     .into_iter()
-    .map(|(specifier, source)| Ok((specifier.to_string(), source.to_string())))
-    .collect::<Result<HashMap<String, String>, FromUtf8Error>>()
-    .map_err(|err| JsValue::from(js_sys::Error::new(&format!("{:#}", err))))?;
+    .map(|(specifier, source)| (specifier, source))
+    .collect::<HashMap<String, String>>();
 
   serde_wasm_bindgen::to_value(&map)
     .map_err(|err| JsValue::from(js_sys::Error::new(&format!("{:#}", err))))
