@@ -1,10 +1,10 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
-import { toFileUrl } from "https://deno.land/std@0.182.0/path/mod.ts";
+import { toFileUrl } from "jsr:@std/path";
 import {
   assertEquals,
   assertRejects,
   assertStringIncludes,
-} from "https://deno.land/std@0.182.0/testing/asserts.ts";
+} from "jsr:@std/assert";
 import { bundle, transpile } from "../js/mod.ts";
 import {
   resolveFixture,

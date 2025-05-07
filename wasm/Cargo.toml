@@ -16,12 +16,14 @@ name = "emit"
 anyhow = { workspace = true }
 base64 = { workspace = true }
 console_error_panic_hook = "0.1.7"
+deno_ast = { workspace = true }
 deno_emit = { path = "../rs-lib" }
+deno_error = { version = "0.5.6" }
 deno_graph = { workspace = true }
 getrandom = { version = "*", features = ["js"] }
-js-sys = { version = "=0.3.69" }
+js-sys = { version = "=0.3.77" }
 serde = { version = "1.0.130", features = ["derive", "rc"] }
 url = { workspace = true }
-wasm-bindgen = { version = "=0.2.92" }
-wasm-bindgen-futures = { version = "=0.4.42" }
+wasm-bindgen = { version = "=0.2.100" }
+wasm-bindgen-futures = { version = "=0.4.50" }
 serde-wasm-bindgen = "0.5.0"

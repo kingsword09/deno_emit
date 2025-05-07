@@ -35,13 +35,13 @@
 const encoder = new TextEncoder();
 
 // run `deno task build` to build this
-import { instantiate } from "./emit.generated.js";
+import { bundle as jsBundle, transpile as jsTranspile } from "./emit.js";
 import { locationToUrl } from "./_utils.ts";
 import {
   type CacheSetting,
   createCache,
   type FetchCacher,
-} from "jsr:@deno/cache-dir@0.13.2";
+} from "@deno/cache-dir";
 
 /** The output of the {@linkcode bundle} function. */
 export interface BundleEmit {
@@ -192,7 +192,7 @@ export async function bundle(
     const cache = createCache({ root: cacheRoot, cacheSetting, allowRemote });
     bundleLoad = cache.load;
   }
-  const { bundle: jsBundle } = await instantiate();
+
   const result = await jsBundle(
     locationToUrl(root).toString(),
     (specifier: string, options: {
@@ -257,7 +257,7 @@ export async function transpile(
     const cache = createCache({ root: cacheRoot, cacheSetting, allowRemote });
     transpileLoad = cache.load;
   }
-  const { transpile: jsTranspile } = await instantiate();
+  
   return jsTranspile(
     locationToUrl(root).toString(),
     (specifier: string, isDynamic: boolean, cacheSetting: CacheSetting) => {

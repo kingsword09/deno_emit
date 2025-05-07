@@ -8,6 +8,7 @@
     ]
   },
   "imports": {
-    "@std/path": "jsr:@std/path@^0.223.0"
+    "@deno/cache-dir": "jsr:@deno/cache-dir@^0.13.2",
+    "@std/path": "jsr:@std/path@^1.0.9"
   }
 }

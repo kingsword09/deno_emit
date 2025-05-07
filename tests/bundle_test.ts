@@ -2,7 +2,7 @@
 import {
   assertEquals,
   assertStringIncludes,
-} from "https://deno.land/std@0.182.0/testing/asserts.ts";
+} from "jsr:@std/assert";
 import { resolveFixture, runModule, testBundle } from "./utils.ts";
 
 Deno.test({

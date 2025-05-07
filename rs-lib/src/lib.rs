@@ -8,6 +8,7 @@ mod emit;
 mod text;
 
 use anyhow::Result;
+use deno_ast::TranspileModuleOptions;
 use deno_graph::source::ResolveError;
 use deno_graph::BuildOptions;
 use deno_graph::CapturingModuleAnalyzer;
@@ -64,8 +65,9 @@ pub async fn transpile(
   loader: &mut dyn Loader,
   maybe_import_map: Option<ImportMapInput>,
   transpile_options: &TranspileOptions,
+  transpile_module_options: &TranspileModuleOptions,
   emit_options: &EmitOptions,
-) -> Result<HashMap<String, Vec<u8>>> {
+) -> Result<HashMap<String, String>> {
   let analyzer = CapturingModuleAnalyzer::default();
   let maybe_import_map = get_import_map_from_input(maybe_import_map)?;
   let import_map_resolver = ImportMapResolver(maybe_import_map);
@@ -91,10 +93,10 @@ pub async fn transpile(
       analyzer.remove_parsed_source(&module.specifier)
     {
       let transpiled_source = parsed_source
-        .transpile(transpile_options, emit_options)?
+        .transpile(transpile_options, transpile_module_options, emit_options)?
         .into_source();
 
-      map.insert(module.specifier.to_string(), transpiled_source.source);
+      map.insert(module.specifier.to_string(), transpiled_source.text);
 
       if let Some(source_map) = transpiled_source.source_map {
         map.insert(format!("{}.map", module.specifier.as_str()), source_map);
@@ -145,7 +147,7 @@ impl deno_graph::source::Resolver for ImportMapResolver {
     &self,
     specifier: &str,
     referrer_range: &Range,
-    _mode: deno_graph::source::ResolutionMode,
+    _mode: deno_graph::source::ResolutionKind,
   ) -> Result<ModuleSpecifier, ResolveError> {
     let maybe_import_map = &self.0;
 
@@ -159,7 +161,7 @@ impl deno_graph::source::Resolver for ImportMapResolver {
       };
 
     if let Some(err) = maybe_import_map_err {
-      Err(ResolveError::Other(err.into()))
+      Err(ResolveError::ImportMap(err.into()))
     } else {
       deno_graph::resolve_import(specifier, &referrer_range.specifier)
         .map_err(|err| err.into())

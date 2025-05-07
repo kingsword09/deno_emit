@@ -1,5 +1,5 @@
-import { join, toFileUrl } from "https://deno.land/std@0.182.0/path/mod.ts";
-import { assertEquals } from "https://deno.land/std@0.182.0/testing/asserts.ts";
+import { join, toFileUrl } from "jsr:@std/path";
+import { assertEquals } from "jsr:@std/assert";
 import { resolveFixture, runModule, testTranspileAndBundle } from "./utils.ts";
 
 Deno.test({

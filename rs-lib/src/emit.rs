@@ -6,7 +6,7 @@ use anyhow::Result;
 use base64::Engine;
 use deno_ast::get_syntax;
 use deno_ast::swc;
-use deno_ast::swc::atoms::JsWord;
+use deno_ast::swc::atoms::Atom;
 use deno_ast::swc::common::comments::SingleThreadedComments;
 use deno_ast::swc::common::Mark;
 use deno_ast::swc::parser::lexer::Lexer;
@@ -82,7 +82,12 @@ impl swc::bundler::Load for BundleLoader<'_> {
         let (source, media_type) = match self.graph.get(specifier) {
           Some(Module::Js(m)) => (&m.source, m.media_type),
           Some(Module::Json(m)) => (&m.source, m.media_type),
-          Some(Module::Npm(_) | Module::Node(_) | Module::External(_)) => {
+          Some(
+            Module::Npm(_)
+            | Module::Node(_)
+            | Module::External(_)
+            | Module::Wasm(_),
+          ) => {
             return Err(anyhow!(
               "Module \"{}\" was an unsupported module kind.",
               specifier
@@ -98,7 +103,7 @@ impl swc::bundler::Load for BundleLoader<'_> {
         let (fm, module) = transpile_module(
           specifier,
           source.as_ref(),
-          media_type,
+          media_type.into(),
           self.transpile_options,
           self.cm,
         )?;
@@ -175,9 +180,10 @@ pub fn bundle_graph(
       external_modules: graph
         .modules()
         .filter_map(|m| match m {
-          Module::External(_) | Module::Node(_) | Module::Npm(_) => {
-            Some(JsWord::from(m.specifier().to_string()))
-          }
+          Module::External(_)
+          | Module::Node(_)
+          | Module::Npm(_)
+          | Module::Wasm(_) => Some(Atom::from(m.specifier().to_string())),
           Module::Js(_) | Module::Json(_) => None,
         })
         .collect(),
@@ -329,7 +335,7 @@ fn transpile_module(
     cm,
     &comments,
     &marks,
-    &diagnostics,
+    Box::new(diagnostics.iter()),
   )?;
   let module = match program {
     swc::ast::Program::Module(module) => module,

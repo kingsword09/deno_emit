@@ -3,5 +3,7 @@
 /wasm/target
 .vscode/
 /js/LICENSE
-/js/emit_bg.wasm
-/js/emit.generated.js
+/js/emit.wasm
+/js/emit.internal.js
+/js/emit.js
+/js/emit.d.ts

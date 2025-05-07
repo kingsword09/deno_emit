@@ -4,26 +4,26 @@ import {
   parse,
   relative,
   resolve,
-  SEP,
+  SEPARATOR,
   toFileUrl,
-} from "https://deno.land/std@0.182.0/path/mod.ts";
+} from "jsr:@std/path";
 import {
   ensureFile,
   existsSync,
-} from "https://deno.land/std@0.182.0/fs/mod.ts";
+} from "jsr:@std/fs";
 import {
   assert,
   assertArrayIncludes,
   assertEquals,
   assertExists,
   AssertionError,
-} from "https://deno.land/std@0.182.0/testing/asserts.ts";
+} from "jsr:@std/assert";
 import {
   buildMessage,
-  diffstr,
-} from "https://deno.land/std@0.182.0/testing/_diff.ts";
-import * as base64Url from "https://deno.land/std@0.182.0/encoding/base64url.ts";
-import * as base64 from "https://deno.land/std@0.182.0/encoding/base64.ts";
+} from "jsr:@std/internal/build-message";
+import { diffStr } from "jsr:@std/internal/diff-str";
+import * as base64Url from "jsr:@std/encoding/base64url";
+import * as base64 from "jsr:@std/encoding/base64";
 import {
   bundle,
   type BundleOptions,
@@ -323,7 +323,7 @@ async function assertSnapshot(
     }
     await applyUpdate(path, actual);
   } else {
-    const diffResult = diffstr(
+    const diffResult = diffStr(
       actual ?? "",
       snapshot ?? "",
     );
@@ -430,7 +430,7 @@ function normalizeIfFileUrl(urlString: string): string {
     const path = fromFileUrl(url);
     // We prepend with the separator instead of using `resolve()` because, on
     // Windows, this adds the device prefix (e.g. `C:`), which we don't want.
-    const normalizedPath = SEP + relative(join(Deno.cwd(), "testdata"), path);
+    const normalizedPath = SEPARATOR + relative(join(Deno.cwd(), "testdata"), path);
     return toFileUrl(normalizedPath).toString();
   }
   return url.toString();
@@ -487,9 +487,9 @@ function fixInlineSourceMap(code: string): string {
   }
 
   const sourceMapBase64 = match[1];
-  const sourceMap = textDecoder.decode(base64.decode(sourceMapBase64));
+  const sourceMap = textDecoder.decode(base64.decodeBase64(sourceMapBase64));
   const newSourceMap = fixSourceMap(sourceMap);
-  const newSourceMapBase64 = base64.encode(textEncoder.encode(newSourceMap));
+  const newSourceMapBase64 = base64.encodeBase64(newSourceMap);
 
   lines[indexOfLastLine] =
     `//# sourceMappingURL=data:application/json;base64,${newSourceMapBase64}`;
@@ -500,7 +500,7 @@ function fixInlineSourceMap(code: string): string {
 async function hashShortSha1(input: string): Promise<string> {
   // Base64 makes the hash shorted; the URL variants avoids special characters
   // other than dash and underscore.
-  return base64Url.encode(
+  return base64Url.encodeBase64Url(
     await crypto.subtle.digest(
       "SHA-1",
       textEncoder.encode(input),

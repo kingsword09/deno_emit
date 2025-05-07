@@ -3,7 +3,8 @@
 use std::collections::HashMap;
 use std::string::FromUtf8Error;
 
-use anyhow::anyhow;
+use deno_ast::ModuleKind;
+use deno_ast::TranspileModuleOptions;
 use deno_emit::BundleOptions;
 use deno_emit::BundleType;
 use deno_emit::EmitOptions;
@@ -15,6 +16,7 @@ use deno_emit::Loader;
 use deno_emit::ModuleSpecifier;
 use deno_emit::SourceMapOption;
 use deno_emit::TranspileOptions;
+use deno_error::JsErrorBox;
 use serde::Serialize;
 use url::Url;
 use wasm_bindgen::prelude::*;
@@ -81,6 +83,7 @@ impl CompilerOptions {
         precompile_jsx,
         precompile_jsx_skip_elements: None,
         precompile_jsx_dynamic_props: None,
+        verbatim_module_syntax: false,
       },
       EmitOptions {
         inline_sources: self.inline_sources,
@@ -183,7 +186,14 @@ impl Loader for JsLoader {
 
       response
         .map(|value| serde_wasm_bindgen::from_value(value).unwrap())
-        .map_err(|err| anyhow!("load rejected or errored: {:#?}", err))
+        .map_err(|err| {
+          deno_graph::source::LoadError::Other(std::sync::Arc::new(
+            JsErrorBox::generic(format!(
+              "load rejected or errored: {:#?}",
+              err
+            )),
+          ))
+        })
     };
     Box::pin(f)
   }
@@ -280,20 +290,23 @@ pub async fn transpile(
   .transpose()
   .map_err(|err| JsValue::from(js_sys::Error::new(&format!("{:#}", err))))?;
 
+  let transpile_module_options = TranspileModuleOptions {
+    module_kind: Some(ModuleKind::Esm),
+  };
+
   let map = deno_emit::transpile(
     root,
     &mut loader,
     maybe_import_map,
     &transpile_options,
+    &transpile_module_options,
     &emit_options,
   )
   .await
   .map_err(|err| JsValue::from(js_sys::Error::new(&format!("{:#}", err))))?;
   let map = map
     .into_iter()
-    .map(|(specifier, source)| {
-      Ok((specifier.to_string(), String::from_utf8(source)?))
-    })
+    .map(|(specifier, source)| Ok((specifier.to_string(), source.to_string())))
     .collect::<Result<HashMap<String, String>, FromUtf8Error>>()
     .map_err(|err| JsValue::from(js_sys::Error::new(&format!("{:#}", err))))?;
 

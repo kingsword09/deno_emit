@@ -214,9 +214,7 @@ export class BufferFullError extends Error {
   partial;
   name;
   constructor(partial){
-    super("Buffer full");
-    this.partial = partial;
-    this.name = "BufferFullError";
+    super("Buffer full"), this.partial = partial, this.name = "BufferFullError";
   }
 }
 export class PartialReadError extends Error {

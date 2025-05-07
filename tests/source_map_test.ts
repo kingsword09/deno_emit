@@ -3,8 +3,8 @@ import {
   assertEquals,
   assertExists,
   assertRejects,
-} from "https://deno.land/std@0.182.0/testing/asserts.ts";
-import { toFileUrl } from "https://deno.land/std@0.182.0/path/mod.ts";
+} from "jsr:@std/assert";
+import { toFileUrl } from "jsr:@std/path";
 import { bundle, transpile } from "../js/mod.ts";
 import { resolveFixture } from "./utils.ts";
 

@@ -1081,6 +1081,7 @@ const path = isWindows ? mod : mod1;
 const { join: join2, normalize: normalize2 } = path;
 const path1 = isWindows ? mod : mod1;
 const { basename: basename2, delimiter: delimiter2, dirname: dirname2, extname: extname2, format: format2, fromFileUrl: fromFileUrl2, isAbsolute: isAbsolute2, join: join3, normalize: normalize3, parse: parse2, relative: relative2, resolve: resolve2, sep: sep2, toFileUrl: toFileUrl2, toNamespacedPath: toNamespacedPath2 } = path1;
+2 ** 32 - 2;
 function isCloser(value) {
     return typeof value === "object" && value != null && "close" in value && typeof value["close"] === "function";
 }
