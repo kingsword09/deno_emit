@@ -13,7 +13,7 @@ transpiled fashion. An example of taking some TypeScript and transpiling to
 JavaScript:
 
 ```ts
-import { transpile } from "jsr:@kingsword/deno-emit";
+import { transpile } from "jsr:@kingsword/deno-emit-inline";
 
 const url = new URL("./testdata/mod.ts", import.meta.url);
 const result = await transpile(url);
@@ -29,7 +29,7 @@ This is similar to the functionality provided by `deno bundle` on the Deno
 command line. An example:
 
 ```ts
-import { bundle } from "jsr:@kingsword/deno-emit";
+import { bundle } from "jsr:@kingsword/deno-emit-inline";
 const result = await bundle(
   new URL("https://deno.land/std@0.140.0/examples/chat/server.ts"),
 );
