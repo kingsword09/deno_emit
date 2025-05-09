@@ -1,6 +1,6 @@
 # emit
 
-[![deno emit](https://jsr.io/badges/@deno/emit)](https://jsr.io/@deno/emit)
+[![deno emit](https://jsr.io/badges/@kingsword/deno-emit-inline)](https://jsr.io/@kingsword/deno-emit-inline)
 
 Transpile and bundle JavaScript and TypeScript in Deno and Deno Deploy.
 

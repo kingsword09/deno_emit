@@ -8,7 +8,7 @@
  * ### Example - Transpiling
  *
  * ```ts
- * import { transpile } from "jsr:@deno/emit";
+ * import { transpile } from "jsr:@kingsword/deno-emit-inline";
  *
  * const url = new URL("./testdata/mod.ts", import.meta.url);
  * const result = await transpile(url);
@@ -20,7 +20,7 @@
  * ### Example - Bundling
  *
  * ```ts
- * import { bundle } from "jsr:@deno/emit";
+ * import { bundle } from "jsr:@kingsword/deno-emit-inline";
  * const result = await bundle(
  *   "https://deno.land/std@0.140.0/examples/chat/server.ts",
  * );
@@ -156,7 +156,7 @@ export interface CompilerOptions {
  * ### Example
  *
  * ```ts
- * import { bundle } from "jsr:@deno/emit";
+ * import { bundle } from "jsr:@kingsword/deno-emit-inline";
  * const result = await bundle(
  *   "https://deno.land/std@0.140.0/examples/chat/server.ts",
  * );

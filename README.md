@@ -1,6 +1,6 @@
 # deno_emit
 
-[![deno emit](https://jsr.io/badges/@deno/emit)](https://jsr.io/@deno/emit)
+[![deno emit](https://jsr.io/badges/@kingsword/deno-emit)](https://jsr.io/@kingsword/deno-emit)
 [![Twitter handle][]][Twitter badge]
 [![Discord Chat](https://img.shields.io/discord/684898665143206084?logo=discord&style=social)](https://discord.gg/deno)
 
